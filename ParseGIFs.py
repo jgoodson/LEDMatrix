@@ -1,13 +1,10 @@
-import io
-import pickle
 import os
-import asyncio
-import sys
+import pickle
+import io
 
 import requests
 from wand.image import Image as WImage
 from PIL import Image as PImage
-import aiohttp
 
 def read_image(image_file):
     if image_file.startswith('http://') or image_file.startswith('https://'):
@@ -24,13 +21,9 @@ def read_image(image_file):
             frames.append((frameim, frame.delay))
     return pickle.dumps(frames)
 
-async def change_image(new_image):
-    with open('gif.pickle', 'wb') as o:
-        await o.write(framesets[new_image])
-
 if __name__ == '__main__':
-    framesets = {}
-    for fs in os.listdir('framesets'):
-        if fs.endswith('.pickle'):
-            with open(fs, 'rb') as i:
-                framesets[fs] = pickle.load(i)
+    gifs = os.listdir('gifs')
+    framesets = {gif: read_image('gifs/'+gif) for gif in gifs}
+    for name, gif in framesets.items():
+        with open('framesets/{}.pickle'.format(name), 'wb') as o:
+            o.write(gif)
