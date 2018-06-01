@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gif Changer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</head>
+    <form action="/upload" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+
+        <label for="gif">GIF</label>
+        <input id="gif" name="gif" type="file" value=""/>
+        <input type="submit" value="submit"/>
+    </form>
+    <form action="change" method="post">
+        {% for gif in gifs %}
+            <div><button type="submit" name="gif" value="{{ gif }}" class="btn btn-primary btn-link">{{ gif }}</button></div>
+        {%  endfor %}
+    </form>
+</body>
+</html>
