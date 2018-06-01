@@ -7,3 +7,5 @@ Runs a webserver (GIFServer.py) which can accept new images or change the curren
 gif-viewer.py uses the rgbmatrix library to update the LED matrix according to the specified image file. Checks constantly for updates to image enabling the webserver to change the displayed image.
 
 Requires Python 3.5+ due to use of asyncio.
+
+![Video of LEDMatrix displaying GIF](https://raw.githubusercontent.com/jgoodson/LEDMatrix/master/animation.gif)
