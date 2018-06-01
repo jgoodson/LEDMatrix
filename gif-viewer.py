@@ -2,6 +2,7 @@
 import sys
 import pickle
 import asyncio
+import os.path
 
 import requests
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
@@ -10,15 +11,20 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 def swap_image(buffer):
     matrix.SwapOnVSync(buffer)
 
-
 async def display_frames(frames):
+    global interrupted
+    interrupted = False
     for frame, delay in frames:
+        if interrupted:
+            break
         buffer.SetImage(frame)
         swap_time = loop.time()
         swap_image(buffer)
         swap_duration = loop.time() - swap_time
-        #TODO figure out how to trigger exit from this loop
-        await asyncio.sleep(delay/100 - swap_duration)
+        if delay:
+            await asyncio.sleep(delay/100 - swap_duration)
+        else:
+            await asyncio.sleep(1)
 
 
 async def loop_forever():
@@ -26,12 +32,21 @@ async def loop_forever():
         await display_frames(current_frames)
 
 async def monitor_input():
-    global current_frames
+    global current_frames, interrupted
+    last_updated = os.path.getmtime(image_file)
     while running:
-        with open(image_file, 'rb') as i:
-            new_gif = pickle.load(i)
-        current_frames = new_gif
-        await asyncio.sleep(1)
+        if last_updated != os.path.getmtime(image_file):
+            try:
+                with open(image_file, 'rb') as i:
+                    new_gif = pickle.load(i)
+                current_frames = new_gif
+                interrupted = True
+                last_updated = os.path.getmtime(image_file)
+            except:
+                pass
+        await asyncio.sleep(.1)
+
+
 
 if __name__ == '__main__':
 
